@@ -1,12 +1,12 @@
-Google Glass QuickStart and HelloWorld
+Google Glass Goat Radar
 
 can do:
-- Eventutally this will be a skeleton Hello World application with Google's Quickstart framework
+- Currently pulls trendy info about cats within a region from Twitter
 
-- To add examples of a variety of menu options
 
 to do:
 Document framework as a tutorial
 Strip out unneeded code
-Finish tutorial 
+Show returned data on a local map
+
 

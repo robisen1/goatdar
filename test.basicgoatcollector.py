@@ -1,3 +1,4 @@
+#! python
 # sen
 
 import twitter

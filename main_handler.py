@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Modified for simple Hello World Application
+# Modified for the Goatdar application
 
 """Request Handler for /main endpoint."""
 
@@ -24,6 +24,8 @@ import jinja2
 import logging
 import os
 import webapp2
+import json
+import goatcollector
 
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
@@ -43,6 +45,37 @@ jinja_environment = jinja2.Environment(
 
 
 TIMELINE_ITEM_TEMPLATE_URL = '/templates/card.html'
+
+
+
+# put my goat content here 
+
+
+def is_empty(any_structure):
+    if any_structure:
+        #print('Structure is not empty.')
+        return False
+    else:
+        #print('Structure is empty.')
+        return True
+
+query = "cats"
+    
+goatquery = goatcollector.Goatcollector(query)
+    
+    
+resp_dict = json.loads(goatquery.getCollection())
+
+    
+#if 'media' in resp_dict['text'] == True:    
+    #if is_empty(resp_dict['entities']['media']) == False:
+        ##print resp_dict['media']['url']
+
+            
+#if 'geo' in resp_dict['text'] == True:    
+    #if is_empty(resp_dict['geo']) == False:
+        ##print resp_dict['geo']
+
 
 
 
@@ -80,9 +113,9 @@ class MainHandler(webapp2.RequestHandler):
     # self.mirror_service is initialized in util.auth_required.
     try:
       template_values['contact'] = self.mirror_service.contacts().get(
-        id='python-quick-start').execute()
+        id='goatdar').execute()
     except errors.HttpError:
-      logging.info('Unable to find hello world contact.')
+      logging.info('Unable to find goatdar contact.')
 
     timeline_items = self.mirror_service.timeline().list(maxResults=3).execute()
     template_values['timelineItems'] = timeline_items.get('items', [])
@@ -105,23 +138,25 @@ class MainHandler(webapp2.RequestHandler):
                       'phoneNumber': '5558675309'
                   },          
           'location': { 'kind': 'mirror#location', 'id': 'home', 'latitude': 38.935963, 'longitude': -77.159423, 'displayName': 'Home'},
-          'title': 'hello world',     
+          'title': 'Goatdar',     
           'html': template.render(),
-          'text': 'Hello?',
-          'speakableText':  'Hello World',
+          'text': 'Goat??',
+          'speakableText':  'Goat',
           'menuItems': [            
               {'action': 'READ_ALOUD'},
               {'action': 'TOGGLE_PINNED'},
-              {'action': 'REPLY'},
-              {'action': 'PLAY_VIDEO', 'payload' : 'http://localhost:8080/static/videos/clipcanvas_14348_H264_640x360.mp4'},
-              {'action': 'OPEN_URI', 'payload' : 'http://www.google.com'},
               {'action': 'SHARE'},
-              {'action': 'VOICE_CALL'},
-              {'action': 'NAVIGATE'},
-              {'action': 'CUSTOM', 'id':'SAYHI', 'values': [{'displayName': 'Say Hi'}]},
               {'action': 'DELETE'}
           ]
       }
+    
+    global resp_dict
+    
+    # get the info from the Twitter 
+    mybutt = 'jenghi has a butt'
+    
+    template_values['text'] = resp_dict['text']
+    template_values['butt'] = mybutt
 
     self.mirror_service.timeline().insert(body=body).execute()
     self.response.out.write(template.render(template_values))
@@ -216,21 +251,6 @@ class MainHandler(webapp2.RequestHandler):
     self.mirror_service.timeline().insert(body=body).execute()
     return  'A timeline item has been inserted.'
 
-  def _insert_item_with_action(self):
-    """Insert a timeline item user can reply to."""
-    logging.info('Inserting timeline item')
-    body = {
-        'creator': {
-            'displayName': 'Python Starter Project',
-            'id': 'PYTHON_STARTER_PROJECT'
-        },
-        'text': 'Tell me what you had for lunch :)',
-        'notification': {'level': 'DEFAULT'},
-        'menuItems': [{'action': 'REPLY'}]
-    }
-    # self.mirror_service is initialized in util.auth_required.
-    self.mirror_service.timeline().insert(body=body).execute()
-    return 'A timeline item with action has been inserted.'
 
   def _insert_item_all_users(self):
     """Insert a timeline item to all authorized users."""
@@ -242,7 +262,7 @@ class MainHandler(webapp2.RequestHandler):
       return 'Total user count is %d. Aborting broadcast to save your quota' % (
           total_users)
     body = {
-        'text': 'Hello Everyone!',
+        'text': 'Goat Everyone!',
         'notification': {'level': 'DEFAULT'}
     }
 

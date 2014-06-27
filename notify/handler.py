@@ -41,7 +41,7 @@ Hello_Messages = [
     "<em class='red'>Ola </em>",
     "<em class='red'>dobar dan</em>",
     "<em class='green'>Bonjour</em>",
-    "<em class='blue'>Jó napot</em>",
+    "<em class='blue'>J napot</em>",
     "<em class='red'> Kon-nichiwa</em>",
     "<em class='yellow'>Guten Tag</em>"
 ]
@@ -66,7 +66,7 @@ class NotifyHandler(webapp2.RequestHandler):
   def _handle_locations_notification(self, data):
     """Handle locations notification."""
     location = self.mirror_service.locations().get(id=data['itemId']).execute()
-    text = 'Python Quick Start says you are at %s by %s.' % \
+    text = 'Goatdar says you are at %s by %s.' % \
         (location.get('latitude'), location.get('longitude'))
     body = {
         'text': text,
@@ -85,7 +85,7 @@ class NotifyHandler(webapp2.RequestHandler):
       if user_action.get('type') == 'SHARE':
         # Create a dictionary with just the attributes that we want to patch.
         body = {
-            'text': 'Python Quick Start got your photo! %s' % item.get('text', '')
+            'text': 'Goatdar got your photo! %s' % item.get('text', '')
         }
 
         # Patch the item. Notice that since we retrieved the entire item above
@@ -107,7 +107,7 @@ class NotifyHandler(webapp2.RequestHandler):
         item['html'] = ("<article class='auto-paginate'>" +
             "<p class='text-auto-size'>" +
             "Oh, did you say " + note_text + "? " + utterance + "</p>" +
-            "<footer><p>Python Quick Start</p></footer></article>")
+            "<footer><p>Goatdar</p></footer></article>")
         item['menuItems'] = [{ 'action': 'DELETE' }];
 
         self.mirror_service.timeline().update(

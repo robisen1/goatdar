@@ -153,10 +153,10 @@ class MainHandler(webapp2.RequestHandler):
     global resp_dict
     
     # get the info from the Twitter 
-    mybutt = 'jenghi has a butt'
+    mycontent = 'i like cats'
     
     template_values['text'] = resp_dict['text']
-    template_values['butt'] = mybutt
+    template_values['testtext'] = mycontent
 
     self.mirror_service.timeline().insert(body=body).execute()
     self.response.out.write(template.render(template_values))

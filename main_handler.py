@@ -16,8 +16,6 @@
 
 """Request Handler for /main endpoint."""
 
-__author__ = 'alainv@google.com (Alain Vongsouvanh)'
-
 
 import io
 import jinja2
@@ -67,17 +65,6 @@ goatquery = goatcollector.Goatcollector(query)
 resp_dict = json.loads(goatquery.getCollection())
 
     
-#if 'media' in resp_dict['text'] == True:    
-    #if is_empty(resp_dict['entities']['media']) == False:
-        ##print resp_dict['media']['url']
-
-            
-#if 'geo' in resp_dict['text'] == True:    
-    #if is_empty(resp_dict['geo']) == False:
-        ##print resp_dict['geo']
-
-
-
 
 
 class _BatchCallback(object):
@@ -129,6 +116,18 @@ class MainHandler(webapp2.RequestHandler):
         template_values['locationSubscriptionExists'] = True
 
     template = jinja_environment.get_template('templates/card.html')
+    
+    global resp_dict
+        
+    # get the info from the Twitter 
+    mycontent = 'i like cats'
+        
+    template_values['text'] = resp_dict['text']
+    template_values['testtext'] = mycontent
+        
+   #body['testtext'] = mycontent    
+    
+    
     # this is the first menu the user sees or the main menu
     body = {
           'notification': {'level': 'DEFAULT'},
@@ -139,7 +138,7 @@ class MainHandler(webapp2.RequestHandler):
                   },          
           'location': { 'kind': 'mirror#location', 'id': 'home', 'latitude': 38.935963, 'longitude': -77.159423, 'displayName': 'Home'},
           'title': 'Goatdar',     
-          'html': template.render(),
+          'html': template.render(template_values),
           'text': 'Goat??',
           'speakableText':  'Goat',
           'menuItems': [            
@@ -150,16 +149,15 @@ class MainHandler(webapp2.RequestHandler):
           ]
       }
     
-    global resp_dict
     
-    # get the info from the Twitter 
-    mycontent = 'i like cats'
     
-    template_values['text'] = resp_dict['text']
-    template_values['testtext'] = mycontent
+    #service.timeline().insert(body=timeline_item).execute()
 
     self.mirror_service.timeline().insert(body=body).execute()
     self.response.out.write(template.render(template_values))
+    
+    #timeline_item = {'text': 'Hello world'}
+    #self.mirror_service.timeline().insert(body=timeline_item).execute()
 
   @util.auth_required
   def get(self):
